@@ -1,20 +1,20 @@
 /*
-INTERAKTIVE FUSSGÄNGERAMPEL
-(c) 2014, Simon Leiner
+INTERACTIVE TRAFFIC LIGHT WITH footbridge
+(c) 2014-2017, Simon Leiner
 */
 
 // Constants
-const int led_green = 11;    // led pin for green
-const int led_yellow = 12;  // led pin for yellow
-const int led_red = 13;     // led pin for red
+const int ledCar_g = D8;     // led pin for green
+const int ledCar_y = D7;     // led pin for yellow
+const int ledCar_r = D6;     // led pin for red
 
-const int led2_green = 5;   // led pin for green (footbridge)
-const int led2_yellow = 6;  // led pin for yellow (footbridge)
-const int led2_red = 7;     // led pin for red (footbridge)
+const int ledPed_g = D2;     // led pin for green (footbridge)
+const int ledPed_y = D1;     // led pin for yellow (footbridge)
+const int ledPed_r = D0;     // led pin for red (footbridge)
 
-const int button = 2;       // button pin
-const int led_notify = 8;   // notifying led pin
-const int flash_ms = 125;   // duration of a blink (ms)
+const int button = D3;       // button pin
+const int led_notify = D4;   // notifying led pin
+const int flash_ms = 125;    // duration of a blink (ms)
 
 // duration of phases in ms
 const int duration_ms[8] = {
@@ -22,10 +22,10 @@ const int duration_ms[8] = {
   3000,         // 1 = traffic light red-yellow, footbridge red
   10000,        // 2 = traffic light green, footbridge red (minimum duration!)
   3000,         // 3 = traffic light yellow, footbridge red
-  500,          // 4 = traffic light red, footbridge red
-  500,          // 5 = traffic light red, footbridge red-yellow
-  8000,         // 6 = traffic light red, footbridge green
-  1000};        // 7 = traffic light red, footbridge yellow
+  1000,         // 4 = traffic light red, footbridge red
+  0,            // 5 = traffic light red, footbridge red-yellow
+  9000,         // 6 = traffic light red, footbridge green
+  0};           // 7 = traffic light red, footbridge yellow
 
 // running variables
 int state = -1;                   // stores numeric coded state
@@ -67,76 +67,76 @@ void act(int s) {
 
     if (s == 0) {
       Serial.println("traffic light red, footbridge red");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 1) {
       Serial.println("traffic light red-yellow, footbridge red");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, HIGH);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, HIGH);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 2) {
       Serial.println("traffic light green, footbridge red");
-      digitalWrite(led_green, HIGH);        // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, LOW);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, HIGH);        // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, LOW);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 3) {
       Serial.println("traffic light yellow, footbridge red");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, HIGH);
-      digitalWrite(led_red, LOW);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, HIGH);
+      digitalWrite(ledCar_r, LOW);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 4) {
       Serial.println("traffic light red, footbridge red");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 5) {
       Serial.println("traffic light red, footbridge red-yellow");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, HIGH);
-      digitalWrite(led2_red, HIGH);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, HIGH);
+      digitalWrite(ledPed_r, HIGH);
     }
     else if (s == 6) {
       Serial.println("traffic light red, footbridge green");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, HIGH);       // Update footbridge status
-      digitalWrite(led2_yellow, LOW);
-      digitalWrite(led2_red, LOW);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, HIGH);       // Update footbridge status
+      digitalWrite(ledPed_y, LOW);
+      digitalWrite(ledPed_r, LOW);
       goRequest = false;              // delete Request
     }
     else if (s == 7) {
       Serial.println("traffic light red, footbridge yellow");
-      digitalWrite(led_green, LOW);       // Update traffic light status
-      digitalWrite(led_yellow, LOW);
-      digitalWrite(led_red, HIGH);
-      digitalWrite(led2_green, LOW);        // Update footbridge status
-      digitalWrite(led2_yellow, HIGH);
-      digitalWrite(led2_red, LOW);
+      digitalWrite(ledCar_g, LOW);       // Update traffic light status
+      digitalWrite(ledCar_y, LOW);
+      digitalWrite(ledCar_r, HIGH);
+      digitalWrite(ledPed_g, LOW);        // Update footbridge status
+      digitalWrite(ledPed_y, HIGH);
+      digitalWrite(ledPed_r, LOW);
     }
     // Update variable
     lastState = s;
@@ -145,23 +145,23 @@ void act(int s) {
 
 bool updateState() {
   // if needed, updates status variable
-  if (state == 2) { // green phase
+  if (state == 2) { // traffic light green phase, the only phase that does not automatically time out
     if ((goRequest == true) && (millis() >= (lastSwitch_ms + duration_ms[state]))) {  // if footbridge was requested and green was on long enough
-      state = nextState(state);               // update state
-      lastSwitch_ms = millis();                                                         // update timer
-      return true;                  // return true: status switched
+      state = nextState(state);     // update state
+      lastSwitch_ms = millis();     // update timer
+      return true;                  // true => status switched
     }
 
   }
 
-  else if (millis() >= (lastSwitch_ms + duration_ms[state])) {                         // other phases: if enough time has passed
-    state = nextState(state);                                                          // update state
-    lastSwitch_ms = millis();                                                          // update timer
-    return true;                       // return true: status switched
+  else if (millis() >= (lastSwitch_ms + duration_ms[state])) {  // other phases: if enough time has passed
+    state = nextState(state);       // update state
+    lastSwitch_ms = millis();       // update timer
+    return true;                    // true => status switched
     }
     
    else {
-    return false;                                                                    // return false: status not switched
+    return false;                   // false => status not switched
     }
 }
 
@@ -185,17 +185,19 @@ bool getButton() {
 
 void setup() {
   // initialise serial output
-  Serial.begin(9600);
+  Serial.begin(115200);
+
+  delay(3000);
   
   // initialise led pins as output
   Serial.print("Initialising pins... ");
-  pinMode(led_green, OUTPUT);
-  pinMode(led_yellow, OUTPUT);
-  pinMode(led_red, OUTPUT);
+  pinMode(ledCar_g, OUTPUT);
+  pinMode(ledCar_y, OUTPUT);
+  pinMode(ledCar_r, OUTPUT);
   
-  pinMode(led2_green, OUTPUT);
-  pinMode(led2_yellow, OUTPUT);
-  pinMode(led2_red, OUTPUT);
+  pinMode(ledPed_g, OUTPUT);
+  pinMode(ledPed_y, OUTPUT);
+  pinMode(ledPed_r, OUTPUT);
   
   pinMode(led_notify, OUTPUT);
   pinMode(button, INPUT);
@@ -232,4 +234,3 @@ void loop() {
   // check if new state is required
   updateState();
 }
-
