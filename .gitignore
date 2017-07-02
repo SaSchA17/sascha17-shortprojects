@@ -1,3 +1,9 @@
+# Private Configuration files
+config.h
+
+# IDE Folders
+.vscode
+
 # Prerequisites
 *.d
 
