@@ -3,6 +3,9 @@ INTERACTIVE TRAFFIC LIGHT WITH footbridge
 (c) 2014-2017, Simon Leiner
 */
 
+#include "config.h"
+#include "mqtt.h"
+
 // Constants
 const int ledCar_g = D8;     // led pin for green
 const int ledCar_y = D7;     // led pin for yellow
@@ -110,7 +113,7 @@ void act(int s) {
       digitalWrite(ledPed_y, LOW);
       digitalWrite(ledPed_r, HIGH);
     }
-    else if (s == 5) {
+    else if (s == 5) { 
       Serial.println("traffic light red, footbridge red-yellow");
       digitalWrite(ledCar_g, LOW);       // Update traffic light status
       digitalWrite(ledCar_y, LOW);
@@ -187,6 +190,11 @@ void setup() {
   // initialise serial output
   Serial.begin(115200);
 
+  // setup WiFi and MQTT connection
+  setupMQTT();
+  setupWiFi();
+  connectToWifi();  
+
   delay(3000);
   
   // initialise led pins as output
@@ -215,6 +223,7 @@ void loop() {
   if (state != 6 && getButton() == true && goRequest == false) {    // ignore if footbridge light is already green or request already taken
     goRequest = true;
     Serial.println("Button pushed! Requesting green light for footbridge!");
+    mqttClient.publish(MqttNotificationLight, 1, true, "true");
   }
 
   // blink if signal is coming
@@ -229,6 +238,7 @@ void loop() {
   else {
     digitalWrite(led_notify, LOW);
     notifyOn = false;
+    mqttClient.publish(MqttNotificationLight, 1, true, "false");
   }
 
   // check if new state is required
