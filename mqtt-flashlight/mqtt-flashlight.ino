@@ -14,7 +14,7 @@ void setup()
     Serial.println();
     Serial.println();
 
-    Messenger::initialize();
+    Messenger::initialize(WIFI_SSID, WIFI_KEY, MQTT_HOST, MQTT_PORT, MQTT_PREFIX);
     Messenger::mqttClient.onConnect(mqttOnConnect);
     Messenger::mqttClient.onMessage(mqttOnMessage);
 
@@ -45,14 +45,17 @@ void mqttOnMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 
     if((MQTT_PREFIX + "/r").equals(topic)) {
         r = brightness;
+        analogWrite(R_PIN, r);
         Serial.println("r set to " + String(brightness));
     }
     else if((MQTT_PREFIX + "/g").equals(topic)) {
         g = brightness;
+        analogWrite(G_PIN, g);
         Serial.println("g set to " + String(brightness));
     }
     else if((MQTT_PREFIX + "/b").equals(topic)) {
         b = brightness;
+        analogWrite(B_PIN, b);
         Serial.println("b set to " + String(brightness));
     }
 }
@@ -65,7 +68,4 @@ void mqttOnConnect(bool sessionPresent) {
 
 void loop()
 {
-	analogWrite(R_PIN, r);
-    analogWrite(G_PIN, g);
-    analogWrite(B_PIN, b);
 }

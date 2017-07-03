@@ -1,10 +1,15 @@
 #pragma once
 
+// (c) 2015 Marvin Roger
+// (c) 2017 Sonja Bleymehl, Simon Leiner
+
 #include "messenger.h"
 
 using namespace Messenger;
 
 const bool Messenger::DEBUG = true;
+
+struct configuration Messenger::config;
 
 AsyncMqttClient Messenger::mqttClient;
 Ticker Messenger::mqttReconnectTimer;
@@ -15,11 +20,11 @@ Ticker Messenger::wifiReconnectTimer;
 
 void Messenger::connectToWifi() {
     debug_msg("Connecting to Wi-Fi...");
-    WiFi.begin(WIFI_SSID.c_str(), WIFI_KEY.c_str());
+    WiFi.begin(config.WIFI_SSID.c_str(), config.WIFI_KEY.c_str());
 }
 
 void Messenger::onWifiConnect(const WiFiEventStationModeGotIP& event) {
-    debug_msg("Connected to Wi-Fi network: " + WIFI_SSID);
+    debug_msg("Connected to Wi-Fi network: " + config.WIFI_SSID);
     connectToMqtt();
 }
 
@@ -30,38 +35,38 @@ void Messenger::onWifiDisconnect(const WiFiEventStationModeDisconnected& event) 
 }
 
 void Messenger::connectToMqtt() {
-  debug_msg("Connecting to MQTT...");
-  mqttClient.connect();
+    debug_msg("Connecting to MQTT...");
+    mqttClient.connect();
 }
 
 void Messenger::onMqttConnect(bool sessionPresent) {
-  debug_msg("Connected to MQTT.");
-  debug_msg("Session present: " + (String) sessionPresent);
+    debug_msg("Connected to MQTT.");
+    debug_msg("Session present: " + (String) sessionPresent);
 }
 
 void Messenger::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  debug_msg("Disconnected from MQTT.");
+    debug_msg("Disconnected from MQTT.");
 
-  if (WiFi.isConnected()) {
-    debug_msg("Connecting to MQTT...");
-    mqttReconnectTimer.once(2, connectToMqtt);
-  }
+    if (WiFi.isConnected()) {
+        debug_msg("Connecting to MQTT...");
+        mqttReconnectTimer.once(2, connectToMqtt);
+    }
 }
 
 void Messenger::onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-  debug_msg("Subscribe acknowledged.");
-  debug_msg("  packetId: " + (String) packetId);
-  debug_msg("  qos: " + (String) qos);
+    debug_msg("Subscribe acknowledged.");
+    debug_msg("  packetId: " + (String) packetId);
+    debug_msg("  qos: " + (String) qos);
 }
 
 void Messenger::onMqttUnsubscribe(uint16_t packetId) {
-  debug_msg("Unsubscribe acknowledged.");
-  Serial.print("  packetId: " + (String) packetId);
+    debug_msg("Unsubscribe acknowledged.");
+    Serial.print("  packetId: " + (String) packetId);
 }
 
 void Messenger::onMqttPublish(uint16_t packetId) {
-  debug_msg("Publish acknowledged.");
-  Serial.print("  packetId: " + (String) packetId);
+    debug_msg("Publish acknowledged.");
+    Serial.print("  packetId: " + (String) packetId);
 }
 
 void Messenger::onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
@@ -71,17 +76,31 @@ void Messenger::onMqttMessage(char* topic, char* payload, AsyncMqttClientMessage
     debug_msg("");
 }
 
-void Messenger::initialize() {
-  wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
-  wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
+void Messenger::initialize(
+    const String WIFI_SSID,
+    const String WIFI_KEY,
+    const IPAddress MQTT_HOST,
+    const unsigned int MQTT_PORT,
+    const String MQTT_PREFIX) {
+    
+    // config = configuration(WIFI_SSID, WIFI_KEY, MQTT_HOST, MQTT_PORT, MQTT_PREFIX);
 
-  mqttClient.onConnect(onMqttConnect);
-  mqttClient.onDisconnect(onMqttDisconnect);
-  mqttClient.onSubscribe(onMqttSubscribe);
-  mqttClient.onUnsubscribe(onMqttUnsubscribe);
-  mqttClient.onMessage(onMqttMessage);
-  mqttClient.onPublish(onMqttPublish);
-  mqttClient.setServer(MQTT_HOST, MQTT_PORT);
+    config.WIFI_SSID = WIFI_SSID;
+    config.WIFI_KEY = WIFI_KEY;
+    config.MQTT_HOST = MQTT_HOST;
+    config.MQTT_PORT = MQTT_PORT;
+    config.MQTT_PREFIX = MQTT_PREFIX;
+
+    wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
+    wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);
+
+    mqttClient.onConnect(onMqttConnect);
+    mqttClient.onDisconnect(onMqttDisconnect);
+    mqttClient.onSubscribe(onMqttSubscribe);
+    mqttClient.onUnsubscribe(onMqttUnsubscribe);
+    mqttClient.onMessage(onMqttMessage);
+    mqttClient.onPublish(onMqttPublish);
+    mqttClient.setServer(config.MQTT_HOST, config.MQTT_PORT);
 }
 
 void Messenger::debug_msg(String msg) {

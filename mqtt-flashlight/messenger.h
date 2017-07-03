@@ -1,14 +1,65 @@
 #pragma once
 
+// Messenger for NodeMCU boards
+// ============================
+// aufgebaut auf die Bibliothek AsyncMqttClient von Marvin Roger
+// 
+// (c) 2015-2017 Marvin Roger
+// (c) 2017 Sonja Bleymehl, Simon Leiner
+//
+// herausgegeben unter der MIT-Lizenz
+//
+// -------------------------------------------------------------
+//
+// Diese Bibliothek ermöglicht das einfache Aufbauen einer 
+// MQTT-Verbindung sowie das asynchrone Veröffentlichen und
+// Reagieren auf Nachrichten. Dazu stellt die Bibliothek 
+// zusätzlich eine (ggf. verschlüsselte) Verbindung zu einem
+// WLAN-AP her.
+//
+//
+// BENUTZUNG DER Bibliothek
+// ========================
+//
+// Zunächst muss die Funktion Messenger::initialize aufgerufen werden
+// Diese benötigt folgende Argumente (in dieser Reihenfolge):
+//  - const String WIFI_SSID
+//  - const String WIFI_KEY
+//  - const IPAddress MQTT_HOST
+//  - const unsigned int MQTT_PORT
+//  - const String MQTT_PREFIX
+//
+//
+// Danach können Callbacks registriert werden. (siehe Beispiel!)
+//
+// Danach kann die Verbindung zum WLAN-AP mithilfe der Funktion
+// Messenger::connectToWifi aufgebaut werden. Sobald die 
+// WLAN-Verbindung etabliert ist, wird die Verbindung zum MQTT-
+// Broker aufgebaut. 
+//
+// Eine Nachricht kann man mit der Funktion
+// Messenger::mqttClient.publish veröffentlichen.
+
+
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <AsyncMqttClient.h>
 
-#include "config.h"
-
 
 namespace Messenger{
+
+    struct configuration {
+        String WIFI_SSID;
+        String WIFI_KEY;
+
+        IPAddress MQTT_HOST;
+        unsigned int MQTT_PORT;
+        String MQTT_PREFIX;
+    };
+
+    extern struct configuration config;
 
     extern AsyncMqttClient mqttClient;
     extern Ticker mqttReconnectTimer;
@@ -30,6 +81,6 @@ namespace Messenger{
     void onMqttUnsubscribe(uint16_t packetId);
     void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
     void onMqttPublish(uint16_t packetId);  
-    void initialize();
+    void initialize(const String WIFI_SSID, const String WIFI_KEY, const IPAddress MQTT_HOST, const unsigned int MQTT_PORT, const String MQTT_PREFIX);
     void debug_msg(String msg);
 }
