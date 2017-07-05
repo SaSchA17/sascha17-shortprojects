@@ -42,6 +42,11 @@ void Messenger::connectToMqtt() {
 void Messenger::onMqttConnect(bool sessionPresent) {
     debug_msg("Connected to MQTT.");
     debug_msg("Session present: " + (String) sessionPresent);
+
+    // Man könnte hier zu bestimmten Themen subscriben:
+    //
+    // int qos = 0; // im Zweifelsfall ist 0 okay ;-)
+    // mqttClient.subscribe("mein/tolles/thema", qos);
 }
 
 void Messenger::onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -80,16 +85,12 @@ void Messenger::initialize(
     const String WIFI_SSID,
     const String WIFI_KEY,
     const IPAddress MQTT_HOST,
-    const unsigned int MQTT_PORT,
-    const String MQTT_PREFIX) {
-    
-    // config = configuration(WIFI_SSID, WIFI_KEY, MQTT_HOST, MQTT_PORT, MQTT_PREFIX);
+    const unsigned int MQTT_PORT) {
 
     config.WIFI_SSID = WIFI_SSID;
     config.WIFI_KEY = WIFI_KEY;
     config.MQTT_HOST = MQTT_HOST;
     config.MQTT_PORT = MQTT_PORT;
-    config.MQTT_PREFIX = MQTT_PREFIX;
 
     wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
     wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWifiDisconnect);

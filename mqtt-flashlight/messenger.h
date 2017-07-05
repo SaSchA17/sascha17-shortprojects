@@ -27,18 +27,12 @@
 //  - const String WIFI_KEY
 //  - const IPAddress MQTT_HOST
 //  - const unsigned int MQTT_PORT
-//  - const String MQTT_PREFIX
 //
 //
-// Danach können Callbacks registriert werden. (siehe Beispiel!)
-//
-// Danach kann die Verbindung zum WLAN-AP mithilfe der Funktion
-// Messenger::connectToWifi aufgebaut werden. Sobald die 
-// WLAN-Verbindung etabliert ist, wird die Verbindung zum MQTT-
-// Broker aufgebaut. 
 //
 // Eine Nachricht kann man mit der Funktion
 // Messenger::mqttClient.publish veröffentlichen.
+// 
 
 
 
@@ -56,7 +50,6 @@ namespace Messenger{
 
         IPAddress MQTT_HOST;
         unsigned int MQTT_PORT;
-        String MQTT_PREFIX;
     };
 
     extern struct configuration config;
@@ -70,7 +63,6 @@ namespace Messenger{
 
     extern const bool DEBUG;
 
-
     void connectToWifi();
     void onWifiConnect(const WiFiEventStationModeGotIP& event);
     void onWifiDisconnect(const WiFiEventStationModeDisconnected& event);
@@ -81,6 +73,6 @@ namespace Messenger{
     void onMqttUnsubscribe(uint16_t packetId);
     void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
     void onMqttPublish(uint16_t packetId);  
-    void initialize(const String WIFI_SSID, const String WIFI_KEY, const IPAddress MQTT_HOST, const unsigned int MQTT_PORT, const String MQTT_PREFIX);
+    void initialize(const String WIFI_SSID, const String WIFI_KEY, const IPAddress MQTT_HOST, const unsigned int MQTT_PORT);
     void debug_msg(String msg);
 }
